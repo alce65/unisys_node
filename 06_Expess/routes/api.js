@@ -25,8 +25,9 @@ router.get('/:id', async function(req, res, next) {
         if(userNum < 0) { throw( 404 ) }
         res.send(users[userNum]);
     } catch (err) {
-        console.log(err)
-        next(createError(err))
+        console.log('En el router se detecta un error', err)
+        //next(createError(err))
+        res.send({Error: err})
     }
 });
 
@@ -46,13 +47,16 @@ router.put('/:id', async function(req, res, next) {
     try {
         const users = await readData()
         const userNum = users.findIndex( item => item.id == req.params.id)
-        if(userNum < 0) { throw( 403 ) }
+        if(userNum < 0) { throw( 404 ) }
         const id = users[userNum].id
         users[userNum] = req.body
         users[userNum].id = id
         await writeData(users)
         res.send(users[userNum]);
-    } catch (error) {
+    } catch (err) {
+        console.log('En el router se detecta un error', err)
+        //next(createError(err))
+        res.send({Error: err, msg: 'No existe el registro ' + req.params.id})
     }
 });
 
